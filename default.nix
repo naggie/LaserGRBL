@@ -58,6 +58,10 @@ pkgs.stdenv.mkDerivation rec {
     # Enable Mono's I/O mapping for cross-platform compatibility
     # This handles case-insensitive filesystems and path separators
     export MONO_IOMAP=all
+    
+    # Tell Mono to use UTF-8 as the default encoding
+    # This avoids calling Windows GetCPInfoExW for code page detection
+    export MONO_EXTERNAL_ENCODINGS=UTF-8
   '';
 
   buildPhase = ''
@@ -66,11 +70,15 @@ pkgs.stdenv.mkDerivation rec {
     # Build using MSBuild
     # Use /p:TargetFrameworkVersion=v4.0 to ensure compatibility
     # Disable post-build events as they may fail in sandboxed build
+    # Use /p:UseSharedCompilation=false to avoid issues with spaces in paths
+    # Use /p:Prefer32Bit=false to build for Any CPU properly
     msbuild LaserGRBL.sln \
       /p:Configuration=Release \
       /p:Platform="Any CPU" \
       /p:TargetFrameworkVersion=v4.0 \
       /p:RunPostBuildEvent=None \
+      /p:UseSharedCompilation=false \
+      /p:Prefer32Bit=false \
       /t:Build \
       /verbosity:minimal \
       /maxcpucount:''${NIX_BUILD_CORES:-1}

@@ -102,6 +102,7 @@ The build automatically includes necessary fonts (Microsoft Core Fonts, DejaVu f
 - Configures fontconfig with proper cache directories
 - Sets UTF-8 locale using `LOCALE_ARCHIVE` for proper character encoding
 - Enables `MONO_IOMAP` for better cross-platform file handling
+- Sets `MONO_EXTERNAL_ENCODINGS=UTF-8` to avoid Windows code page detection
 
 If you still encounter font-related errors, ensure your Nix installation is up to date.
 
