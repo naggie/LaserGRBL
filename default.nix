@@ -20,35 +20,36 @@ pkgs.stdenv.mkDerivation rec {
   ];
 
   # Configure mono environment for the build
-  configurePhase = ''
-    runHook preConfigure
+  configurePhase = 
+    let
+      fontsConf = pkgs.makeFontsConf {
+        fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
+      };
+    in
+    ''
+      runHook preConfigure
 
-    # Set up mono paths
-    export MONO_PATH="${pkgs.mono}/lib/mono/4.5"
-    export FrameworkPathOverride="${pkgs.mono}/lib/mono/4.5"
-    
-    # Configure font paths for RESX compilation
-    # MSBuild/Mono needs to find fonts when compiling resource files
-    export FONTCONFIG_FILE=${pkgs.makeFontsConf {
-      fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
-    }}
-    
-    # Create writable fontconfig cache directory to avoid warnings
-    export FONTCONFIG_PATH=${pkgs.makeFontsConf {
-      fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
-    }}
-    mkdir -p $TMPDIR/fontconfig-cache
-    export XDG_CACHE_HOME=$TMPDIR/fontconfig-cache
-    
-    # Set locale to avoid encoding issues with C# compiler
-    export LANG=C.UTF-8
-    export LC_ALL=C.UTF-8
-    
-    # Create necessary directories
-    mkdir -p LaserGRBL/bin/Release
+      # Set up mono paths
+      export MONO_PATH="${pkgs.mono}/lib/mono/4.5"
+      export FrameworkPathOverride="${pkgs.mono}/lib/mono/4.5"
+      
+      # Configure font paths for RESX compilation
+      # MSBuild/Mono needs to find fonts when compiling resource files
+      export FONTCONFIG_FILE=${fontsConf}
+      
+      # Create writable fontconfig cache directory to avoid warnings
+      mkdir -p $TMPDIR/fontconfig-cache
+      export XDG_CACHE_HOME=$TMPDIR/fontconfig-cache
+      
+      # Set locale to avoid encoding issues with C# compiler
+      export LANG=C.UTF-8
+      export LC_ALL=C.UTF-8
+      
+      # Create necessary directories
+      mkdir -p LaserGRBL/bin/Release
 
-    runHook postConfigure
-  '';
+      runHook postConfigure
+    '';
 
   buildPhase = ''
     runHook preBuild
