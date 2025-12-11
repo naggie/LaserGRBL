@@ -1,5 +1,11 @@
 { pkgs ? import <nixpkgs> { config.allowUnfree = true; } }:
 
+let
+  fontsConf = pkgs.makeFontsConf {
+    fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
+  };
+in
+
 pkgs.stdenv.mkDerivation rec {
   pname = "lasergrbl";
   version = "unstable-2024-12-11";
@@ -20,20 +26,14 @@ pkgs.stdenv.mkDerivation rec {
   ];
 
   # Configure mono environment for the build
-  configurePhase = 
-    let
-      fontsConf = pkgs.makeFontsConf {
-        fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
-      };
-    in
-    ''
-      runHook preConfigure
+  configurePhase = ''
+    runHook preConfigure
 
-      # Create necessary directories
-      mkdir -p LaserGRBL/bin/Release
+    # Create necessary directories
+    mkdir -p LaserGRBL/bin/Release
 
-      runHook postConfigure
-    '';
+    runHook postConfigure
+  '';
 
   # Set up environment for the build - these need to be available during compile
   preBuild = ''
@@ -43,9 +43,7 @@ pkgs.stdenv.mkDerivation rec {
     
     # Configure font paths for RESX compilation
     # MSBuild/Mono needs to find fonts when compiling resource files
-    export FONTCONFIG_FILE=${pkgs.makeFontsConf {
-      fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
-    }}
+    export FONTCONFIG_FILE=${fontsConf}
     
     # Create writable fontconfig cache directory to avoid warnings
     mkdir -p $TMPDIR/fontconfig-cache
