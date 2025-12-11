@@ -42,7 +42,7 @@ pkgs.stdenv.mkDerivation rec {
       /p:RunPostBuildEvent=None \
       /t:Build \
       /verbosity:minimal \
-      /maxcpucount:$NIX_BUILD_CORES
+      /maxcpucount:''${NIX_BUILD_CORES:-1}
 
     runHook postBuild
   '';
@@ -57,7 +57,10 @@ pkgs.stdenv.mkDerivation rec {
     
     # Copy the compiled executable and dependencies
     if [ -d LaserGRBL/bin/Release ]; then
-      cp -r LaserGRBL/bin/Release/* $out/lib/lasergrbl/ || true
+      cp -r LaserGRBL/bin/Release/* $out/lib/lasergrbl/
+    else
+      echo "Error: Build output directory not found"
+      exit 1
     fi
     
     # Ensure the main executable exists
@@ -67,17 +70,28 @@ pkgs.stdenv.mkDerivation rec {
     fi
     
     # Copy resource files (these are marked as CopyToOutputDirectory in .csproj)
-    [ -f LaserGRBL/StandardButtons.zbn ] && cp LaserGRBL/StandardButtons.zbn $out/lib/lasergrbl/ || true
-    [ -f LaserGRBL/StandardMaterials.psh ] && cp LaserGRBL/StandardMaterials.psh $out/lib/lasergrbl/ || true
-    
-    # Copy firmware directory if it exists
-    if [ -d LaserGRBL/Firmware ]; then
-      cp -r LaserGRBL/Firmware $out/lib/lasergrbl/ || true
+    # These files are required for proper operation
+    if [ -f LaserGRBL/StandardButtons.zbn ]; then
+      cp LaserGRBL/StandardButtons.zbn $out/lib/lasergrbl/
+    else
+      echo "Warning: StandardButtons.zbn not found"
     fi
     
-    # Copy autotrace if it exists
+    if [ -f LaserGRBL/StandardMaterials.psh ]; then
+      cp LaserGRBL/StandardMaterials.psh $out/lib/lasergrbl/
+    else
+      echo "Warning: StandardMaterials.psh not found"
+    fi
+    
+    # Copy optional directories if they exist
+    # Firmware directory (optional, for flashing functionality)
+    if [ -d LaserGRBL/Firmware ]; then
+      cp -r LaserGRBL/Firmware $out/lib/lasergrbl/
+    fi
+    
+    # Autotrace directory (optional, for advanced features)
     if [ -d LaserGRBL/Autotrace ]; then
-      cp -r LaserGRBL/Autotrace $out/lib/lasergrbl/ || true
+      cp -r LaserGRBL/Autotrace $out/lib/lasergrbl/
     fi
     
     # Create wrapper script that sets up the environment
