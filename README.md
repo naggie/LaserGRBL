@@ -71,6 +71,16 @@ New OpenGL preview:
 
 LaserGRBL is written in C# for .NET Framework 3.5 (or higher) and can be compiled with [SharpDevelop](http://www.icsharpcode.net/opensource/sd/) and of course with [Microsoft Visual Studio](https://www.visualstudio.com) IDE/Compiler
 
+#### Building on Linux with Nix
+
+LaserGRBL can be built on Linux using the Nix package manager and Mono:
+
+```bash
+nix-build
+```
+
+See [NIX_BUILD.md](NIX_BUILD.md) for detailed instructions on building with Nix.
+
 ### Licensing
 
 LaserGRBL is free software, released under the [GPLv3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).

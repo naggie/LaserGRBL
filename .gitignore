@@ -304,3 +304,7 @@ $RECYCLE.BIN/
 setup.exe
 install.exe
 updte.bat
+
+# Nix build outputs
+result
+result-*
