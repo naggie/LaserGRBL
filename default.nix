@@ -13,6 +13,9 @@ pkgs.stdenv.mkDerivation rec {
 
   buildInputs = with pkgs; [
     mono
+    # Fonts needed for RESX compilation on Linux
+    corefonts  # Provides Microsoft fonts including MS Sans Serif
+    dejavu_fonts  # Fallback fonts
   ];
 
   # Configure mono environment for the build
@@ -22,6 +25,12 @@ pkgs.stdenv.mkDerivation rec {
     # Set up mono paths
     export MONO_PATH="${pkgs.mono}/lib/mono/4.5"
     export FrameworkPathOverride="${pkgs.mono}/lib/mono/4.5"
+    
+    # Configure font paths for RESX compilation
+    # MSBuild/Mono needs to find fonts when compiling resource files
+    export FONTCONFIG_FILE=${pkgs.makeFontsConf {
+      fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
+    }}
     
     # Create necessary directories
     mkdir -p LaserGRBL/bin/Release
