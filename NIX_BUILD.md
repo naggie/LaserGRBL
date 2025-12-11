@@ -90,13 +90,14 @@ msbuild LaserGRBL.sln /p:Configuration=Release
 - LaserGRBL is a Windows Forms application running under Mono
 - Some Windows-specific features may have limited functionality on Linux
 - The application requires X11 to run (it won't work in a headless environment)
-- The build includes Microsoft Core Fonts and DejaVu fonts to handle font references in resource files
+- The build includes Microsoft Core Fonts (unfree) and DejaVu fonts to handle font references in resource files
+- **Unfree License**: This derivation uses Microsoft Core Fonts which are unfree. The derivation automatically enables unfree packages (`config.allowUnfree = true`)
 
 ## Troubleshooting
 
 ### Font Errors During Build
 
-The build automatically includes necessary fonts (Microsoft Core Fonts, DejaVu fonts) for compiling resource files. If you still encounter font-related errors, ensure your Nix installation is up to date.
+The build automatically includes necessary fonts (Microsoft Core Fonts, DejaVu fonts) for compiling resource files. The derivation enables unfree packages to allow Microsoft Core Fonts. If you still encounter font-related errors, ensure your Nix installation is up to date.
 
 ### Display Issues
 
