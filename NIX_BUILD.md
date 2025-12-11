@@ -1,0 +1,86 @@
+# Building LaserGRBL with Nix
+
+This repository includes Nix derivations for building LaserGRBL on Linux using Mono.
+
+## Quick Start
+
+### Building with Nix
+
+To build LaserGRBL using Nix:
+
+```bash
+nix-build
+```
+
+This will create a `result` symlink pointing to the built package.
+
+### Running LaserGRBL
+
+After building, you can run LaserGRBL with:
+
+```bash
+./result/bin/lasergrbl
+```
+
+### Installing
+
+To install LaserGRBL to your Nix profile:
+
+```bash
+nix-env -f default.nix -i
+```
+
+Then you can run it directly:
+
+```bash
+lasergrbl
+```
+
+## Development
+
+For development, you can enter a shell with all the necessary dependencies:
+
+```bash
+nix-shell
+```
+
+This provides `mono`, `msbuild`, and other tools needed for building.
+
+Within the shell, you can build manually:
+
+```bash
+msbuild LaserGRBL.sln /p:Configuration=Release
+```
+
+## Requirements
+
+- Nix package manager (https://nixos.org/download.html)
+- X11 display server (for GUI)
+
+## Notes
+
+- LaserGRBL is a Windows Forms application running under Mono
+- Some Windows-specific features may have limited functionality on Linux
+- The application requires X11 to run (it won't work in a headless environment)
+
+## Troubleshooting
+
+### Display Issues
+
+If you encounter display issues, ensure you have X11 running:
+
+```bash
+echo $DISPLAY
+```
+
+### Missing Libraries
+
+If you get library errors, you may need to install additional dependencies:
+
+```bash
+nix-shell -p xorg.libX11 xorg.libXext
+```
+
+## License
+
+LaserGRBL is licensed under GPLv3. See LICENSE.md for details.
