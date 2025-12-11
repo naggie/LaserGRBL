@@ -9,6 +9,7 @@ pkgs.stdenv.mkDerivation rec {
   nativeBuildInputs = with pkgs; [
     mono
     msbuild
+    glibcLocales  # For UTF-8 locale support
   ];
 
   buildInputs = with pkgs; [
@@ -31,6 +32,17 @@ pkgs.stdenv.mkDerivation rec {
     export FONTCONFIG_FILE=${pkgs.makeFontsConf {
       fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
     }}
+    
+    # Create writable fontconfig cache directory to avoid warnings
+    export FONTCONFIG_PATH=${pkgs.makeFontsConf {
+      fontDirectories = [ pkgs.corefonts pkgs.dejavu_fonts ];
+    }}
+    mkdir -p $TMPDIR/fontconfig-cache
+    export XDG_CACHE_HOME=$TMPDIR/fontconfig-cache
+    
+    # Set locale to avoid encoding issues with C# compiler
+    export LANG=C.UTF-8
+    export LC_ALL=C.UTF-8
     
     # Create necessary directories
     mkdir -p LaserGRBL/bin/Release
