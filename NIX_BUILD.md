@@ -4,7 +4,22 @@ This repository includes Nix derivations for building LaserGRBL on Linux using M
 
 ## Quick Start
 
-### Building with Nix
+### Using Nix Flakes (Recommended)
+
+If you have flakes enabled:
+
+```bash
+# Build the project
+nix build
+
+# Run LaserGRBL directly
+nix run
+
+# Enter development shell
+nix develop
+```
+
+### Using Traditional Nix
 
 To build LaserGRBL using Nix:
 
@@ -30,6 +45,12 @@ To install LaserGRBL to your Nix profile:
 nix-env -f default.nix -i
 ```
 
+Or with flakes:
+
+```bash
+nix profile install
+```
+
 Then you can run it directly:
 
 ```bash
@@ -44,6 +65,12 @@ For development, you can enter a shell with all the necessary dependencies:
 nix-shell
 ```
 
+Or with flakes:
+
+```bash
+nix develop
+```
+
 This provides `mono`, `msbuild`, and other tools needed for building.
 
 Within the shell, you can build manually:
@@ -56,6 +83,7 @@ msbuild LaserGRBL.sln /p:Configuration=Release
 
 - Nix package manager (https://nixos.org/download.html)
 - X11 display server (for GUI)
+- For flakes: Enable flakes in your Nix configuration
 
 ## Notes
 
@@ -79,6 +107,14 @@ If you get library errors, you may need to install additional dependencies:
 
 ```bash
 nix-shell -p xorg.libX11 xorg.libXext
+```
+
+### Flakes Not Enabled
+
+To enable flakes, add this to your `~/.config/nix/nix.conf` or `/etc/nix/nix.conf`:
+
+```
+experimental-features = nix-command flakes
 ```
 
 ## License
