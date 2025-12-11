@@ -100,7 +100,8 @@ msbuild LaserGRBL.sln /p:Configuration=Release
 The build automatically includes necessary fonts (Microsoft Core Fonts, DejaVu fonts) for compiling resource files. The derivation:
 - Enables unfree packages to allow Microsoft Core Fonts
 - Configures fontconfig with proper cache directories
-- Sets UTF-8 locale for proper character encoding
+- Sets UTF-8 locale using `LOCALE_ARCHIVE` for proper character encoding
+- Enables `MONO_IOMAP` for better cross-platform file handling
 
 If you still encounter font-related errors, ensure your Nix installation is up to date.
 

@@ -29,7 +29,7 @@ pkgs.stdenv.mkDerivation rec {
     ''
       runHook preConfigure
 
-      # Set up mono paths
+      # Set up mono paths - use 4.5 for better compatibility with .NET 4.0
       export MONO_PATH="${pkgs.mono}/lib/mono/4.5"
       export FrameworkPathOverride="${pkgs.mono}/lib/mono/4.5"
       
@@ -42,8 +42,13 @@ pkgs.stdenv.mkDerivation rec {
       export XDG_CACHE_HOME=$TMPDIR/fontconfig-cache
       
       # Set locale to avoid encoding issues with C# compiler
+      # Use LOCALE_ARCHIVE for glibc locales in Nix
+      export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
       export LANG=C.UTF-8
       export LC_ALL=C.UTF-8
+      
+      # Disable Mono's Windows compatibility shims that might cause encoding issues
+      export MONO_IOMAP=all
       
       # Create necessary directories
       mkdir -p LaserGRBL/bin/Release
